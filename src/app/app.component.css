@@ -1,0 +1,23 @@
+table {
+    width: 100%;
+  }
+
+
+ng-select ::ng-deep .ng-select-container .ng-value-container .ng-value .ng-value-label{
+    /* background: blue; */
+    color: lightgreen;
+}
+ng-select ::ng-deep .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+    background: orange;
+    color: blue;
+}
+ng-select ::ng-deep .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected {
+    background: green;
+    color: red;
+}
+
+td{
+    color: brown;
+}
+
+
