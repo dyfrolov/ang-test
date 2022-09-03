@@ -1,0 +1,84 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <ngx-datatable
+            style="width: 90%"
+            class="material"
+            [rows]="rows"
+            [columnMode]="ColumnMode.standard"
+            [headerHeight]="50"
+            [footerHeight]="50"
+            rowHeight="auto"
+            [limit]="5"
+            [selected]="selected"
+            [selectionType]="SelectionType.checkbox"
+            (activate)="onActivate($event)"
+            (select)="onSelect($event)"
+          >
+            <ngx-datatable-column
+              [width]="30"
+              [sortable]="false"
+              [canAutoResize]="false"
+              [draggable]="false"
+            >
+              <ng-template
+                ngx-datatable-header-template
+                let-value="value"
+                let-allRowsSelected="allRowsSelected"
+                let-selectFn="selectFn"
+              >
+              <label class="checkbox-container">
+                  <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)" />
+                  <span class="checkmark"></span>
+              </label>
+              </ng-template>
+              <ng-template
+                ngx-datatable-cell-template
+                let-value="value"
+                let-isSelected="isSelected"
+                let-onCheckboxChangeFn="onCheckboxChangeFn"
+              >
+                <label class="checkbox-container">
+                    <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)" />
+                    <span class="checkmark"></span>
+                </label>  
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column 
+            name="Poster" 
+            prop="media_poster"
+            [sortable]="false"
+            [width]="190"
+            >
+                <ng-template let-column="column" ngx-datatable-header-template
+                [resizeable]="false"
+                > Holla! {{ column.name }} </ng-template>
+                <ng-template let-value="value" let-row="row" ngx-datatable-cell-template
+                [resizeable]="false"
+                >
+                  <!-- Hi: <strong>{{ value.src }}</strong> -->
+                  <div class="media-poster-wrapper">
+                      <img [src]="value.src" alt="" srcset="">
+                  </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Thumbnail" prop="media_poster"
+            >
+                <ng-template let-column="column" ngx-datatable-header-template> Holla! {{ column.name }} </ng-template>
+                <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+                  <!-- Hi: <strong>{{ value.src }}</strong> -->
+                  <div class="media-thumb-wrapper">
+                    <img [src]="value.src" alt="" srcset=""style="height: 100%">
+                  </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Name" prop="media_name"
+            >
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Id" prop="media_id"
+            >
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
+    </div>
+</div>

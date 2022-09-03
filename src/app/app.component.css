@@ -20,4 +20,12 @@ td{
     color: brown;
 }
 
+.ngx-datatable.material.single-selection ::ng-deep .datatable-body-row.active, .ngx-datatable.material.single-selection ::ng-deep .datatable-body-row.active .datatable-row-group, .ngx-datatable.material.multi-selection ::ng-deep  .datatable-body-row.active, .ngx-datatable.material.multi-selection ::ng-deep .datatable-body-row.active .datatable-row-group, .ngx-datatable.material.multi-click-selection ::ng-deep  .datatable-body-row.active, .ngx-datatable.material.multi-click-selection ::ng-deep .datatable-body-row.active .datatable-row-group{
+    background-color: rgb(230, 230, 230)
+}
 
+
+.server-scrolling-demo {
+    height: 400px;
+    /* height: calc(100vh - 400px); */
+  }

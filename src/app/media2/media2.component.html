@@ -1,0 +1,50 @@
+<div class="container">
+    <div class="row media-header">
+        <div class="noshrink" style="width:50px">
+            <label class="checkbox-container">
+                <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)" />
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <div class="col noshrink" style="width:200px">
+            <div class="media-poster-wrapper">
+                Poster
+            </div>
+        </div>
+
+        <div class="col noshrink" style="width:100px">
+            <div class="media-thumb-wrapper">
+                Thumbnail
+            </div>
+        </div>
+        <div class="col shrink">Name</div>
+        <div class="col shrink">Id</div>
+    </div>
+    <div class="row media-row" *ngFor="let row of rows">
+        <div class="noshrink" style="width:50px">
+            <label class="checkbox-container">
+                <input type="checkbox" [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)" />
+                <span class="checkmark"></span>
+            </label>
+
+        </div>
+        <div class="col noshrink" style="width:200px">
+            <div class="media-poster-wrapper">
+                <img [src]="row.media_poster.src" alt="" srcset="">
+            </div>
+      
+        </div>
+        <div class="col noshrink" style="width:100px">
+            <div class="media-thumb-wrapper">
+                <img [src]="row.media_poster.src" alt="" srcset="">
+            </div>
+
+        </div>
+        <div class="col shrink">
+            {{row.media_name}}
+        </div>
+        <div class="col shrink">
+            {{row.media_id}}
+        </div>
+    </div>
+</div>

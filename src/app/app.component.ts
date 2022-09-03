@@ -1,10 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { getMatch, IPMatch, IPSubnetwork, IPRange, matches } from 'ip-matching';
 import {Netmask} from 'netmask';
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatTableDataSource} from '@angular/material/table';
+import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-datatable';
+
+import {DataService, Employee} from './data.service';
+
 export interface PeriodicElement {
   name: string;
   position: number;
@@ -12,7 +16,7 @@ export interface PeriodicElement {
   symbol: string;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
+export const ELEMENT_DATA: PeriodicElement[] = [
   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
   {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
   {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
@@ -25,12 +29,73 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
 ];
 
+
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [DataService]
 })
 export class AppComponent {
+  @ViewChild(DatatableComponent) table!: DatatableComponent;
+  @ViewChild('columnRef') columnRef: any;
+  rows :Employee[] = [];
+  pageSize:number = 20;
+  headerHeight = 50;
+  rowHeight = 50;
+  footerHeight = 50;
+  temp = [...this.rows];
+  columns = [{ prop: 'name' }, { name: 'Gender' }, { name: 'Company' }];
+  selected1:any[] = [];
+  ColumnMode = ColumnMode;
+  SelectionType = SelectionType;
+  isLoading = false;
+
+  constructor(private dataService: DataService, private el: ElementRef){
+    console.log('el: ElementRef', el);
+    console.dir(el);
+    
+  }
+  
+  ngOnInit(){
+    this.loadPage();
+    
+  }
+  getPageNumber(): number {
+    return Math.floor(this.rows.length / this.pageSize);
+  }
+  selectedRow:{name:string}|null = null;
+  onSelect({selected}:any) {
+    if(this.selected1.length>0){
+      this.selectedRow = this.selected1[this.selected1.length-1];
+    }else{
+      this.selectedRow = null;
+    }
+    console.log('Current row: ', this.selectedRow);
+    if (this.selected1.length===2){
+      this.selected1 = [] ;
+      this.selected1.push(this.selectedRow);
+    }
+    console.log('Select Event', selected, this.selected1);
+  }
+
+  updateFilter(event:any) {
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.temp.filter(function (d) {
+      return d.name.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.rows = temp;
+    // Whenever the filter changes, always go back to the first page
+    this.table.offset = 0;
+  }
+
+
+
   displayedColumns: string[] = ['select', 'position', 'name', 'weight', 'symbol'];
   // dataSource = ELEMENT_DATA;
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
@@ -112,4 +177,53 @@ export class AppComponent {
       console.log('incorrect IP mask');
     }
   }  
+
+
+  onScroll(event:any) {
+    const offsetY = event.offsetY;
+    console.log('event', event);
+    console.log('offsetY', offsetY);
+    
+    // total height of all rows in the viewport
+    const viewHeight = this.rows.length * this.rowHeight;
+    console.log(viewHeight);
+    
+    // check if we scrolled to the end of the viewport
+    // if (!this.isLoading && offsetY>200 ) {
+    //   this.isLoading = true;
+    //     this.loadPage();
+    //   }
+  }
+
+  private loadPage() {
+    this.isLoading = true;
+    
+    let results:Employee[] = this.dataService.getData( this.getPageNumber(), this.pageSize );
+    if (results.length!==0){
+      const rows = [...this.rows, ...results];
+      this.rows = rows;
+    }
+    this.isLoading = false;
+  }
+  // onScroll(offsetY: number) {
+  //   // total height of all rows in the viewport
+  //   const viewHeight = this.el.nativeElement.getBoundingClientRect().height - this.headerHeight;
+
+  //   // check if we scrolled to the end of the viewport
+  //   if (!this.isLoading && offsetY + viewHeight >= this.rows.length * this.rowHeight) {
+  //     // total number of results to load
+  //     let limit = this.pageLimit;
+
+  //     // check if we haven't fetched any results yet
+  //     if (this.rows.length === 0) {
+  //       // calculate the number of rows that fit within viewport
+  //       const pageSize = Math.ceil(viewHeight / this.rowHeight);
+
+  //       // change the limit to pageSize such that we fill the first page entirely
+  //       // (otherwise, we won't be able to scroll past it)
+  //       limit = Math.max(pageSize, this.pageLimit);
+  //     }
+  //     this.loadPage(limit);
+  //   }
+  // }
 }
